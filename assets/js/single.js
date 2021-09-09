@@ -1,10 +1,33 @@
 // DOM references
 var issueContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var repoNameEl = document.querySelector("#repo-name");
 
+
+var getRepoName = function() {
+    // getting repo name from url query string
+    var queryString = document.location.search;
+    // here we are extracting the repo name using the split method
+    var repoName = queryString.split("=")[1];
+
+    // conditional statement
+    if(repoName) {
+     // display repo name from url query string 
+     repoNameEl.textContent = repoName;
+
+     getRepoIssues(repoName);
+    }
+    // if the conditional is false then it will redirect you back to the homepage file 
+    else {
+        document.location.replace("./index.html");
+    }
+};
 
 var getRepoIssues = function(repo) {
+    // format the github url
     var apiURL = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
+    
+    // making a GET request to url
     fetch(apiURL).then(function(response) {
         // request was successful
         if(response.ok) {
@@ -18,11 +41,11 @@ var getRepoIssues = function(repo) {
             });
         }
         else {
-            alert("There was a problem with your request!");
+            // if not successful, redirect to homepage
+            document.location.replace("./index.html");
         }
     }); 
 };
-
 
 
 var displayIssues = function(issues) {
@@ -82,4 +105,6 @@ var displayWarning = function(repo) {
 };
 
 
-getRepoIssues("angular/angular");
+// function call/s
+getRepoIssues();
+getRepoName();
