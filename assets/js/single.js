@@ -106,5 +106,4 @@ var displayWarning = function(repo) {
 
 
 // function call/s
-getRepoIssues();
 getRepoName();

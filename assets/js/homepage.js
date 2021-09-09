@@ -3,6 +3,8 @@ var userFormEl = document.querySelector("#user-form");
 var nameInputEl = document.querySelector("#username");
 var repoSearchTerm = document.querySelector("#repo-search-term");
 var repoContainerEl = document.querySelector("#repos-container");
+var languageButtonsEl = document.querySelector("#language-buttons");
+
 
 
 // creating function call
@@ -96,9 +98,42 @@ var displayRepos = function(repos, searchTerm) {
     } 
 };
 
+// function that accepts the language parameter
+var getFeaturedRepos = function(language) {
+    var apiURL = "https://api.github.com/search/repositories?q=" + language + "+is:featured&sort=help-wanted-issues";
+
+
+    // formatting the response with the .then() method, including error handling messages 
+    fetch(apiURL).then(function(response) {
+        if(response.ok) {
+            // parsing the response 
+            response.json().then(function(data){
+                // this displays the repo/s to the page
+                displayRepos(data.items, language);
+            }); 
+        } else {
+            alert("Error: GitHub User Not Found");
+        }
+    });
+};
+
+// search by topic click event listener
+var buttonClickHandler = function (event) {
+    var language = event.target.getAttribute("data-language");
+    console.log(language);
+
+    if (language) {
+        getFeaturedRepos(language);
+
+        // clear old content, event though this line is after the getFeaturedRepos(), it will run first because it takes the least amount of time to load
+        repoContainerEl.textContent = "";
+    }
+}
+
 
 // event listeners
 userFormEl.addEventListener("submit", formSubmitHandler);
+languageButtonsEl.addEventListener("click", buttonClickHandler);
 
 var response = fetch("https://api.github.com/users/octocat/repos");
 console.log(response);
